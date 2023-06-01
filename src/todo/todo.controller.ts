@@ -1,6 +1,7 @@
-import { Controller, Get, Post,  Body} from '@nestjs/common';
+import { Controller, Get, Post,  Body, Param} from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateTaskDto } from './create-task.dto';
+import { UpdateTaskDto } from './update-task.dto';
 @Controller('todo')
 export class TodoController {
     constructor(
@@ -21,5 +22,19 @@ export class TodoController {
         return {
           status : "OK"
         }
-      }
+    }
+    @Post(":id/done")
+    async done(@Param() param:UpdateTaskDto) {
+        await this.prisma.task.update({
+        data: {
+            is_done: true
+        },
+            where: {
+                id: param.id
+            }
+        })
+        return {
+            status : "OK"
+        }
+  }
 }
